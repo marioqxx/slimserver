@@ -234,6 +234,8 @@ sub appsQuery {
 		return;
 	}
 
+	if (! $request->getParam('args')) { $request->addParam('args' => {type => 'plugin', details => 1}); }
+
 	my $args = $request->getParam('args');
 
 	my $data = { remaining => scalar keys %repos, results => [] };
@@ -274,7 +276,15 @@ sub _appsQueryCB {
 
 	my $args = $request->getParam('args');
 
-	my $actions = findUpdates($data->{'results'}, $args->{'current'}, $prefs->get($args->{'type'}) || {}, $args->{'details'});
+	my $install = $prefs->get($args->{'type'}) || {};
+	my $params = $request->{'_params'};
+	for my $k (keys %$params) {
+		main::DEBUGLOG && $log->debug("_appsQueryCB install $k");
+		if ( $params->{ $k } eq "install" ) { $install->{ $k } = 1; }
+	}
+
+	my $actions = findUpdates($data->{'results'}, $args->{'current'}, $install, $args->{'details'});
+	# my $actions = findUpdates($data->{'results'}, $args->{'current'}, $prefs->get($args->{'type'}) || {}, $args->{'details'});
 
 	if ($prefs->get('auto')) {
 
