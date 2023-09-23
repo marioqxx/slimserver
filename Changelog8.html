@@ -22,6 +22,8 @@
 		<li>Move persist.db out of the cache folder - it's music data which can't be restored from the music files.</li>
 		<li>Log warning if the server's time seems to be off (only if MySqueezebox integration is enabled).</li>
 		<li>Re-implement Sounds & Effects plugin to not depend on MySqueezebox for the navigation and content selection.</li>
+		<li>Report actual replay gain value for the currently playing track in "status" query.</li>
+		<li>Add "Q" tag to songinfo, status queries etc. to return lossless flag for tracks (thanks AF-1!).</li>
 		<li><a href="https://github.com/Logitech/slimserver/pull/862">#862</a> - Make lyrics on Default skin songinfo page collapsible (thanks AF-1!)</li>
 		<li><a href="https://github.com/Logitech/slimserver/pull/868">#868</a> - Populate the release year ('year') attribute for remote tracks in the player queue (thanks SamInPgh!)</li>
 		<li>Fix Napster playback on community firmware players</li>
@@ -42,11 +44,12 @@
 		<li><a href="https://github.com/Logitech/slimserver/issues/799">#799</a> - Update IO::String to latest, fixing some odd Perl version check.</li>
 		<li><a href="https://github.com/Logitech/slimserver/issues/829">#829</a> - Don't override a content type set by a page handler.</li>
 		<li><a href="https://github.com/Logitech/slimserver/issues/905">#905</a> - Browsing in to playlists is extremely slow.</li>
+		<li><a href="https://forums.slimdevices.com/forum/user-forums/logitech-media-server/1648813">Respect a contributor's Musicbrainz ID to separate artists of the same name.</a></li>
 		<li>Don't remove online libraries from library views unless there really is a local copy of the same album.</li>
 		<li>Fix Deezer SmartRadio track duration calculation.</li>
 		<li>Allow pausing Deezer Flow.</li>
 		<li>Fix browsing albums from Favorites menu.</li>
-		<li></li>
+		<li>Fix resizing with a defined background color.</li>
 	</ul>
 	<br />
 

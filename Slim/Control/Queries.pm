@@ -856,7 +856,7 @@ sub artistsQuery {
 	my $cacheKey;
 
 	my $collate = Slim::Utils::OSDetect->getOS()->sqlHelperClass()->collate();
-	my $sort    = "contributors.namesort $collate";
+	my $sort    = "contributors.namesort, contributors.musicbrainz_id $collate";
 
 	# Manage joins
 	if (defined $trackID) {
@@ -3625,6 +3625,8 @@ sub statusQuery {
 		if ($canSeek) {
 			$request->addResult('can_seek', 1);
 		}
+
+		$request->addResult('replay_gain', Slim::Player::ReplayGain->fetchGainMode($client, $song) || 0)
 	}
 
 	if ($client->currentSleepTime()) {
@@ -4769,10 +4771,10 @@ my %tagMap = (
 	  'M' => ['musicmagic_mixable', '',            'musicmagic_mixable'], #musicmagic_mixable
 	                                                                    #musicbrainz_id
 	                                                                    #lastplayed
-	                                                                    #lossless
+	  'Q' => ['lossless',         'LOSSLESS',      'lossless'],         #lossless
 	  'w' => ['lyrics',           'LYRICS',        'lyrics'],           #lyrics
 	  'R' => ['rating',           'RATING',        'rating'],           #rating
-	  'O' => ['playcount',        'PLAYCOUNT',     'playcount'],        #playcOunt
+	  'O' => ['playcount',        'PLAYCOUNT',     'playcount'],        #playcount
 	  'Y' => ['replay_gain',      'REPLAYGAIN',    'replay_gain'],      #replay_gain
 	                                                                    #replay_peak
 
@@ -4820,6 +4822,7 @@ my %colMap = (
 	y => 'tracks.year',
 	m => 'tracks.bpm',
 	M => sub { $_[0]->{'tracks.musicmagic_mixable'} ? 1 : 0 },
+ 	Q => sub { $_[0]->{'tracks.lossless'} ? 1 : 0 },
 	k => 'comment',
 	o => 'tracks.content_type',
 	v => 'tracks.tagversion',
@@ -5093,7 +5096,7 @@ sub _songData {
 			}
 
 			# correct values
-			if (($tag eq 'R' || $tag eq 'x') && $value == 0) {
+			if ($tag eq 'R' && $value == 0) {
 				$value = undef;
 			}
 			# we might need to proxy the image request to resize it
@@ -5449,6 +5452,7 @@ sub _getTagDataForTracks {
 	$tags =~ /y/ && do { $c->{'tracks.year'} = 1 };
 	$tags =~ /m/ && do { $c->{'tracks.bpm'} = 1 };
 	$tags =~ /M/ && do { $c->{'tracks.musicmagic_mixable'} = 1 };
+ 	$tags =~ /Q/ && do { $c->{'tracks.lossless'} = 1 };
 	$tags =~ /o/ && do { $c->{'tracks.content_type'} = 1 };
 	$tags =~ /v/ && do { $c->{'tracks.tagversion'} = 1 };
 	$tags =~ /r/ && do { $c->{'tracks.bitrate'} = 1; $c->{'tracks.vbr_scale'} = 1 };
