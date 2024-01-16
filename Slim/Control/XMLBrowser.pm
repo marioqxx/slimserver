@@ -1145,6 +1145,10 @@ sub _cliQuery_done {
 							$itemParams->{slideshow} = 1;
 						}
 
+						if ($item->{weblink} && $item->{name}) {
+							$hash{'weblink'} = $item->{weblink};
+						}
+
 						my %merged = (%{$params}, %{$itemParams});
 
 						if ( $item->{icon} ) {
@@ -1929,7 +1933,7 @@ sub _favoritesParams {
 		$presetParams{'parser'} = $item->{'parser'} if $item->{'parser'};
 
 		if (my $icon = $item->{'image'} || $item->{'icon'} || $item->{'cover'}) {
-			$presetParams{'icon'} = proxiedImage($icon);
+			$presetParams{'icon'} = $icon;
 		}
 
 		return \%presetParams;

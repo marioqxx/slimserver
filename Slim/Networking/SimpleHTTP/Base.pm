@@ -100,7 +100,10 @@ sub _createHTTPRequest {
 		|| $params->{timeout}
 		|| $prefs->get('remotestreamtimeout');
 
-	my $request = $params->{request} || HTTP::Request->new( $type => $url );
+	my $request = $params->{request};
+	if (!($request && ref $request eq 'HTTP::Request')) {
+		$request = HTTP::Request->new( $type => $url );
+	}
 
 	if ( @_ % 2 ) {
 		$request->content( pop @_ );
@@ -193,7 +196,7 @@ sub processResponse {
 			# By default, cached content can live for at most 1 day, this helps control the
 			# size of the cache.  We use ETag/Last Modified to check for stale data during
 			# this time.
-			my $max = 60 * 60 * 24;
+			my $max = 60 * 60 * 24 + 1;
 			my $expires; # undefined until max-age or expires header is seen, or caller defines it
 			my $no_revalidate;
 
